@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-
+import API_URL from "../config";
 export default function ChatPage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -56,7 +56,7 @@ export default function ChatPage() {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/users");
+        const res = await axios.get(`${API_URL}/api/users`);
         setAllUsers(res.data);
         
         let userId = getUserIdFromToken();
@@ -91,7 +91,7 @@ export default function ChatPage() {
 
     console.log("🔌 Initializing socket for user:", currentUserId);
 
-    socketRef.current = io("http://localhost:5000", {
+    socketRef.current = io(`${API_URL}`, {
       transports: ['websocket', 'polling']
     });
     
@@ -189,7 +189,7 @@ export default function ChatPage() {
       
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/messages/${currentUserId}/${selectedUser._id}`
+          `${API_URL}/api/messages/${currentUserId}/${selectedUser._id}`
         );
         setMessages(res.data);
       } catch (err) {

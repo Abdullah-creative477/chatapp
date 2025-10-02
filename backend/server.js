@@ -13,12 +13,33 @@ const Message = require("./models/Message");
 const app = express();
 const server = http.createServer(app);
 
+// UPDATED: CORS Configuration for Production
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://chatapp-frontend-abdullah.onrender.com"  // UPDATE THIS after deploying frontend
+];
+
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", credentials: true },
+  cors: { 
+    origin: allowedOrigins,
+    credentials: true 
+  },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
+
 app.use(express.json());
+
+// ADDED: Health check endpoint (important for Render)
+app.get("/", (req, res) => {
+  res.json({ 
+    status: "Server is running!",
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -33,7 +54,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.log(err));
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
 
 // ---------------------------
 // Socket.IO real-time chat
