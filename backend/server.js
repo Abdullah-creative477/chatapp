@@ -48,13 +48,12 @@ app.use("/api/messages", messageRoutes);
 // ---------------------------
 // MongoDB connection
 // ---------------------------
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.log("❌ MongoDB connection error:", err));
+  .catch(err => console.error("❌ MongoDB connection error:", err));
+
 
 // ---------------------------
 // Socket.IO real-time chat
